@@ -21,6 +21,7 @@ connectDB()
 createAdmin()
 minimum()
 
+
 app.use('/auth', require('./router/auth.router'))
 app.use("/rank", require("./router/rank.router"))
 app.use('/location', require('./router/location.router'))
