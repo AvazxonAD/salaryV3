@@ -35,7 +35,7 @@ exports.workersOnLocation = asyncHandler(async (req, res, next) => {
  exports.createTable = asyncHandler(async (req, res, next) => {
     const location = await Location.findById(req.params.id)
     const {tables, date} = req.body
-    const result = null
+    const result = []
     if(!date || tables.length < 1){
         return next(new ErrorResponse("Sorovlar bosh qolishi mumkin emas", 403))
     }
@@ -60,7 +60,7 @@ exports.workersOnLocation = asyncHandler(async (req, res, next) => {
         })
         location.tables.push(newTable._id)
         await location.save()
-        result.push(newTable._id)
+        result.push(newTable)
     }
     return res.status(200).json({success : true, data : result})
 })
