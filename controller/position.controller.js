@@ -13,7 +13,7 @@ exports.createPosition = asyncHandler(async (req, res, next) => {
     const minimum = await Minimum.findOne()
     let result = []
     for(let position of positions){
-        if(!position.name || !position.percent){
+        if(!position.name || !position.percent, !position.career){
             return next(new ErrorResponse("Sorovlar bosh qolmasligi kerak", 403))
         }
         const test = await Position.findOne({name : position.name, parent : req.user.id})
@@ -34,7 +34,8 @@ exports.createPosition = asyncHandler(async (req, res, next) => {
             percent : position.percent,
             salary : position.percent * minimum.summa,
             parent : req.user.id,
-            date : createDate
+            date : createDate,
+            career : position.career
         })
         await Master.findByIdAndUpdate(req.user.id, {$push : {positions : newPosition._id}}, {new : true})
         result.push(newPosition)

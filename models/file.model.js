@@ -47,6 +47,10 @@ const fileSchema = new mongoose.Schema({
         required : true,
         trim : true
     },
+    career : {
+        type : Number,
+        required : true
+    },
     parent : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "Folder"

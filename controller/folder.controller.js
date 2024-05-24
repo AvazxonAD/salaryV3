@@ -36,7 +36,7 @@ exports.getOpenFolder = asyncHandler(async (req, res, next) => {
 // get open files
 exports.getOpenFolderForFile = asyncHandler(async (req, res, next) => {
     const folder = await Folder.findById(req.params.id)
-    const files = await File.find({_id : {$in : folder.files}})
+    const files = await File.find({_id : {$in : folder.files}}).sort({career : 1})
     return res.status(200).json({success : true, data : files})
 })
 // delete folder 

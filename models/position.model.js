@@ -21,6 +21,10 @@ const positionSchema = new mongoose.Schema({
     date :{
         type : String,
         required : true
+    },
+    career : {
+        type : Number,
+        required : true
     }
 }, {timestamps : true})
 

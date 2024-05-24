@@ -4,6 +4,7 @@ const Folder = require('../models/folder.model')
 const File = require('../models/file.model')
 const mongoose = require('mongoose')
 const Minimum = require('../models/minimum')
+const Position = require('../models/position.model')
 // create new file
 exports.createFile = asyncHandler(async (req, res, next) => {
     const minimum = await Minimum.findOne()
@@ -25,6 +26,7 @@ exports.createFile = asyncHandler(async (req, res, next) => {
         }
     }
     for(let file of files){
+        const career = await Position.findOne({name : file.selectPosition})
         const newFile = await File.create({
             selectPosition : file.selectPosition,
             selectSalary : file.selectPercent * minimum.summa, 
@@ -37,7 +39,8 @@ exports.createFile = asyncHandler(async (req, res, next) => {
             selectType : file.selectType,
             selectBudget : file.selectBudget,
             parentMaster : req.user.id,
-            parent : folder._id
+            parent : folder._id,
+            career : career.career
         })
         folder.files.push(newFile._id)
         await folder.save()

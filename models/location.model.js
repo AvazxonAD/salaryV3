@@ -22,6 +22,12 @@ const locationSchema = new mongoose.Schema({
     tables : [{
         type : mongoose.Schema.Types.ObjectId,
         ref : "Table"
+    }],
+    datesTable : [{
+        date : {
+            type : String,
+            trim : true
+        }
     }]
 }, {timestamps : true})
 

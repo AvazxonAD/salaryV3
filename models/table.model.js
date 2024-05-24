@@ -27,6 +27,18 @@ const tableSchema = new mongoose.Schema({
         type : Number,
         required : true
     },
+    position : {
+      type : String,
+      required : true
+    },
+    rank : {
+      type : String,
+      required : true
+    },
+    career : {
+      type : Number,
+      required : true
+    },
     parentMaster: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Master",
