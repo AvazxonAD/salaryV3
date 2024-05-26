@@ -8,6 +8,8 @@ exports.createWorker = asyncHandler(async (req, res, next) => {
     if(!req.user.admin){
         return next(new ErrorResponse('Siz uchun bu funksiya ruhsat berilmagan '))
     }
+    const parent = await Master.findById(req.user.id)
+
     const {username, password} = req.body
     if(!username || !password){
         return next(new ErrorResponse('Sorovlar bosh qolishi mumkin emas', 403))
@@ -20,6 +22,10 @@ exports.createWorker = asyncHandler(async (req, res, next) => {
     //    return next(new ErrorResponse('Password belgilari 6 tadan kam bolmasligi kerak'))
     //}
     const newUser = await Master.create({username, password, passwordInfo : password})
+
+    parent.users.push(newUser._id)
+    await parent.save()
+
     return res.status(200).json({success : true, data : newUser})
 })
 // login 

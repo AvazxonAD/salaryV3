@@ -12,10 +12,10 @@ exports.createLocation = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Sorovlar bosh qolishi mumkin emas', 403))
     }
     for(let location of locations){
-        if(!location.name || !location.type){
+        if(!location.name){
             return next(new ErrorResponse('Sorovlar bosh qolmasligi kerak', 403))
         }
-        const test = await Location.findOne({name : location.name.trim(), type : location.type.trim(), parent : req.user.id})
+        const test = await Location.findOne({name : location.name.trim(), parent : req.user.id})
         if(test){
             return next(new ErrorResponse('Bu joylashuvda ushbu faoliyat avval kiritilgan', 403))
         }
@@ -30,7 +30,6 @@ exports.createLocation = asyncHandler(async (req, res, next) => {
 
         const newLocation = await Location.create({
             name : location.name,
-            type : location.type,
             parent : req.user.id,
             date : createDate
         })

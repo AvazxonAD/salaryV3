@@ -10,16 +10,28 @@ const paymentAndDeductSchema = new mongoose.Schema({
         type : String,
         required : true
     },
-    payment : {
+    payments : {
         type : Number,
         required : true
     },
-    deduct : {
+    deducts : {
         type : Number,
         required : true
     },
     salary : {
         type : Number,
+        required : true
+    },
+    rankSumma : {
+        type : Number,
+        required : true
+    },
+    career : {
+        type : Number,
+        required : true
+    },
+    date : {
+        type : String,
         required : true
     },
     parent : {
@@ -29,14 +41,6 @@ const paymentAndDeductSchema = new mongoose.Schema({
     parentMaster : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "Master"
-    },
-    career : {
-        type : Number,
-        required : true
-    },
-    date : {
-        type : String,
-        required : true
     }
 }, {timestamps : true})
 

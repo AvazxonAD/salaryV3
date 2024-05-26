@@ -43,9 +43,9 @@ const masterSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : "Folder"
     }],
-    files : [{
+    users : [{
         type : mongoose.Schema.Types.ObjectId,
-        ref : "File"
+        ref : "Master"
     }]
 }, {timestamps : true})
 
