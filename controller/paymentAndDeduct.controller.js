@@ -71,5 +71,6 @@ exports.createPaymnetsAndDeduct = asyncHandler(async (req, res, next) => {
         if(test){
             return next(new ErrorResponse(`Bu fuqaro oylik tolovlari va ushlanmalari hisoblab bolingan : ${test.FIOlotin} ${test.FIOkril}`, 403))
         }
+        
     }
 })    
