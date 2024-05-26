@@ -180,7 +180,7 @@ exports.createPaymnetsAndDeduct = asyncHandler(async (req, res, next) => {
         }
 
         // zararli muhitda ishlagani uchun tolov 
-
+        if()
 
         const newPaymentsAndDeduct = await PaymentsAndDeducts.create({
             date : req.query.date,
