@@ -23,6 +23,16 @@ const locationSchema = new mongoose.Schema({
             type : String,
             trim : true
         }
+    }],
+    datesPaymentsAndDeducts : [{
+        date : {
+            type : String,
+            trim : true
+        }
+    }],
+    paymentsAndDeducts : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "PaymentAndDeduct"
     }]
 }, {timestamps : true})
 
