@@ -285,5 +285,39 @@ exports.createPaymnetsAndDeduct = asyncHandler(async (req, res, next) => {
 
 //delete paymnet anad deduct 
 exports.paymentAndDeductDelete = asyncHandler(async (req, res, next) => {
+    const paymentAndDeduct = await PaymentsAndDeducts.findById(req.params.id)
+
+    const location = await Location.findById(paymentAndDeduct.parent)
+    const index = location.paymentsAndDeducts.indexOf(paymentAndDeduct._id)
+    location.paymentsAndDeducts.splice(index, 1)
+    await location.save()
+    const test = await PaymentsAndDeducts.find({date : paymentAndDeduct.date, parent : location._id})
+
+    if(test.length <= 1){
+        const date = location.datesPaymentsAndDeducts.find(item => item.date === paymentAndDeduct.date)
+        const index = location.datesPaymentsAndDeducts.indexOf(date)
+        location.datesPaymentsAndDeducts.splice(index, 1)
+        await location.save()
+    }
+    await paymentAndDeduct.deleteOne()
+    return res.status(200).json({success : true, data : "Delete"})
+})
+// delete many 
+exports.deleteMany = asyncHandler(async (req, res, next) => {
+    const location = await Location.findById(req.params.id)
+    const paymentsAndDeducts = await PaymentsAndDeducts.find({parent : location._id, date : req.query.date})
+    
+    for(let item of paymentsAndDeducts){
+        const index = location.paymentsAndDeducts.indexOf(item._id)
+        location.paymentsAndDeducts.splice(index, 1)
+        await location.save()
+        await item.deleteOne()
+    }
+    const date = location.datesPaymentsAndDeducts.find(item => item.date === req.query.date)
+    const indexDate = location.datesPaymentsAndDeducts.indexOf(date)
+
+    location.datesPaymentsAndDeducts.splice(indexDate, 1)
+    await location.save()
+    return res.status(200).json({success : true, message : "Delete"})
 
 })
