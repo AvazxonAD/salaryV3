@@ -67,7 +67,8 @@ exports.workersOnLocation = asyncHandler(async (req, res, next) => {
  // create table 
  exports.createTable = asyncHandler(async (req, res, next) => {
     const location = await Location.findById(req.params.id)
-    const {tables, date} = req.body
+    const {tables} = req.body
+    const date = req.query.date
     const result = []
 
     if(!date || tables.length < 1){
@@ -103,8 +104,11 @@ exports.workersOnLocation = asyncHandler(async (req, res, next) => {
         await location.save()
         result.push(newTable)
     }
-    location.datesTable.push({date})
-    await location.save()
+    const test = location.datesTable.find(item => item.date === req.query.date)
+    if(!test){ 
+        location.datesTable.push({date})
+        await location.save()
+    }
     return res.status(200).json({success : true, data : result})
 })
 
@@ -115,8 +119,17 @@ exports.deleteOneTable = asyncHandler(async (req, res, next) => {
     const index = parent.tables.indexOf(table._id)
     parent.tables.splice(index, 1)
     await parent.save()
+    
+    const test = await Table.find({date : table.date, parent : parent._id})
+
+    if( test.length <= 1 ){
+        const date  = parent.datesTable.find(item => item.date === table.date)
+        const index = parent.datesTable.indexOf(date)
+        parent.datesTable.splice(index, 1)
+        await parent.save()
+    }
     await table.deleteOne()
-    return res.status(200).json({success : true, data : "Dlete"})
+    return res.status(200).json({success : true, data : "Delete"})
 })
 
 // delete many table 
