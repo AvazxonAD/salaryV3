@@ -15,10 +15,6 @@ const FolderSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'File'
     }],
-    tables: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Table'
-    }],
     parent : {
         type: mongoose.Schema.Types.ObjectId,
     },
@@ -35,7 +31,6 @@ FolderSchema.methods.deleteAllSubfolders = async function () {
         if (subfolder) {
             await subfolder.deleteAllSubfolders();
             await subfolder.deleteAllFiles();
-            await subfolder.deleteAllTables();
             await subfolder.deleteOne();
         }
     });
@@ -46,7 +41,6 @@ FolderSchema.methods.deleteAllSubfolders = async function () {
 FolderSchema.methods.deleteAllFolders = async function () {
     await this.deleteAllSubfolders();
     await this.deleteAllFiles();
-    await this.deleteAllTables();
     await this.deleteOne();
 };
 
@@ -61,15 +55,5 @@ FolderSchema.methods.deleteAllFiles = async function () {
     await Promise.all(filePromises);
 };
 
-// Tablelarni o'chirish
-FolderSchema.methods.deleteAllTables = async function () {
-    const tablePromises = this.tables.map(async (tableId) => {
-        const table = await this.model('Table').findById(tableId);
-        if (table) {
-            await table.deleteOne();
-        }
-    });
-    await Promise.all(tablePromises);
-};
 
 module.exports = mongoose.model('Folder', FolderSchema);

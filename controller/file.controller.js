@@ -87,3 +87,43 @@ exports.getFileById = asyncHandler(async (req, res, next) => {
     const file = await File.findById(req.params.id)
     return res.status(200).json({success : true, data : file})
 })
+// change file location 
+exports.changeFileLocation = asyncHandler(async (req, res, next) => {
+
+    // req.body null emasligini tekshirish 
+    if(!req.body.changeFolderName || req.body.files.length < 1){
+        return next(new ErrorResponse("Sorovlar bosh qolmasligi kerak va eng kamida bitta rasmiy xodim tanlanishi kerak", 403))
+    }
+    // hozirgi parent folderni topish 
+    const parent = await Folder.findById(req.params.id)
+    if(!parent){
+        return next(new ErrorResponse("Server xatolik ega bolim topilmadi", 403))
+    }
+    // ozgartrilmoqchi bolgan folderni topish 
+    const changeParent = await Folder.findOne({name : req.body.changeFolderName, parentMaster : req.user.id})
+    if(!changeParent){
+        return next(new ErrorResponse("Bolim topilmadi nomini tekshiring", 404))
+    }
+    // parentlar bir xil emasligini tekshirish
+    if(parent._id.toString() === changeParent._id.toString()){
+        return next(new ErrorResponse("siz notogri bolimni tanladinggiz", 403))
+    }
+    // changeParent ga file id larini qoshish parent dan ochirish file parent ni ozgartrish  
+    for(let id of req.body.files){
+
+        // file parent ni ozgartrish
+        const file = await File.findById(id)
+        file.parent = changeParent._id
+        await file.save()
+
+        // changeParent ga file id larini qoshish 
+        changeParent.files.push(file._id)
+        await changeParent.save()
+        
+        //parent dan ochirish 
+        const index = parent.files.indexOf(file._id)
+        parent.files.splice(index, 1)
+        await parent.save()
+    }
+    return res.status(200).json({success : true, data : "Ozgardi"})
+})

@@ -87,3 +87,53 @@ exports.updateFolder = asyncHandler(async (req, res, next) => {
     await folder.save()
     return res.status(200).json({success : true, data : folder})
 })
+// joy almashtrish 
+exports.changeFolderLocation = asyncHandler(async (req, res, next) => {
+    // name null emasligini tekshirish 
+    if(!req.body.name){
+        return next(new ErrorResponse("Sorovlar bosh qolishi mumkin emas", 403))
+    }
+    // params id null emasligini tekshirish 
+    if(!req.params.id){
+        return next(new ErrorResponse("id topilmadi 404 ", 404))
+    }
+    // kerakli ozgaruvchilar elon qilish 
+    let folderParent  = null
+    let changeParent = null
+    // joyini ozgartrmoqchi bolgan folderni topish 
+    const folder = await Folder.findById(req.params.id)
+    if(!folder){
+        return next(new ErrorResponse("Bolim  topilmadi server xatolik", 500))
+    }
+    // ega folder yoki Userni  topish
+    folderParent = await Folder.findById(folder.parent)
+    if(!folderParent){
+        folderParent = await Master.findById(folder.parent)
+        if(!folderParent){
+            return next(new ErrorResponse('Ega bolim yoki user  topilmadi server xatolik', 500))
+        }
+    }
+    // folderni qoshmoqchi bolgan folder yoki userni topish  
+    changeParent = await Folder.findOne({name : req.body.name.trim(), parentMaster : req.user.id})
+    if(!changeParent){
+        changeParent = await Master.findOne({username : req.body.name.trim(), _id : req.user.id})
+        if(!changeParent){
+            return next(new ErrorResponse("Bu nomga ega bolim yoki user topilmadi nomini tekshiring", 403))
+        }
+    }
+    // folderga qayta folder yuklashni cheklash
+    if(changeParent._id.toString() === folderParent._id.toString()){
+        return next(new ErrorResponse("Notog'ri bolim tanladinggiz", 404))
+    }
+    // ega folderdan folderni ochirish 
+    const index = folderParent.folders.indexOf(folder._id)
+    folderParent.folders.splice(index, 1)
+    await folderParent.save()
+    // joylamoqchi bolgan folder yoki userga  folderni joylash
+    changeParent.folders.push(folder._id)
+    await changeParent.save()
+    // joyi ozgargan folderni ega folder yoki user  id sini ozgartrish 
+    folder.parent = changeParent._id
+    folder.save()
+    return res.status(200).json({success : true, data : "Ozgardi"})
+})
