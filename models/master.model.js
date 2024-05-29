@@ -46,6 +46,14 @@ const masterSchema = new mongoose.Schema({
     users : [{
         type : mongoose.Schema.Types.ObjectId,
         ref : "Master"
+    }],
+    payments : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Payment"
+    }],
+    deducts : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Deduct"
     }]
 }, {timestamps : true})
 

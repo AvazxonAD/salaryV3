@@ -29,9 +29,18 @@ exports.createFolder = asyncHandler(async (req, res, next) => {
 })
 // get folder open 
 exports.getOpenFolder = asyncHandler(async (req, res, next) => {
+    // file bor yoqligini anglatuvchi ozgaruvchi elonb qilish 
+    let file = false
+    // parentni topish 
     const parent = await Folder.findById(req.params.id)
+    // parentga tegishli folderlarni olib kelish 
     const folders = await Folder.find({_id : {$in : parent.folders}})
-    return res.status(200).json({success : true, data : folders})
+    // parentda file bor yoqligini tekshirish  
+    if(parent.files.length >= 1){
+        file = true
+    }
+    // javob qaytarish
+    return res.status(200).json({success : true, data : folders, file})
 })
 // get open files
 exports.getOpenFolderForFile = asyncHandler(async (req, res, next) => {
