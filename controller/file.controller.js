@@ -16,7 +16,7 @@ exports.createFile = asyncHandler(async (req, res, next) => {
     const {files} = req.body
     
     for(let file of files){
-        if(!file.selectPosition  || !file.selectPercent || !file.selectLotin || !file.selectKril || !file.selectRank  || !file.selectRegion  || !file.selectType || !file.selectBudget){
+        if(!file.selectPosition  || !file.selectPercent || !file.selectLotin || !file.selectKril || !file.selectRank  || !file.selectRegion  || !file.type || !file.selectBudget){
             return next(new ErrorResponse("Sorovlar bosh qolmasligi kerak", 402))
         }
         const testLotin = await File.findOne({selectLotin : file.selectLotin, parent : folder._id })
@@ -39,7 +39,7 @@ exports.createFile = asyncHandler(async (req, res, next) => {
             selectRank : file.selectRank,  
             selectSumma : file.selectSumma,  
             selectRegion : file.selectRegion,
-            selectType : file.selectType,
+            type : file.type,
             selectBudget : file.selectBudget,
             parentMaster : req.user.id,
             parent : folder._id,
@@ -70,7 +70,7 @@ exports.updateFile = asyncHandler(async (req, res, next) => {
     file.selectRank = req.body.selectRank ?? file.selectRank
     file.selectSumma = req.body.selectSumma ?? file.selectSumma
     file.selectRegion = req.body.selectRegion ?? file.selectRegion
-    file.selectType = req.body.selectType ?? file.selectType
+    file.type = req.body.type ?? file.type
     file.selectBudget = req.body.selectBudget ?? file.selectBudget
     await file.save()
     return res.status(200).json({success : true, data : file})    

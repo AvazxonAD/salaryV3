@@ -52,7 +52,16 @@ exports.createNewPayment = asyncHandler(async (req, res, next) => {
 })
 
 // update payment 
-
+exports.updatePayment = asyncHandler(async (req, res, next) => {
+    // paymentni qidirib topish 
+    const payment = await Payment.findById(req.params.id)
+    // paymemtni yangilash 
+    payment.name = req.body.name || payment.name
+    payment.summa = req.body.summa || payment.summa
+    await payment.save()
+    // javob qayatarish
+    return res.status(200).json({success : true, data : "Ozgardi"})
+})
 
 // delete payment
 exports.deletePayment = asyncHandler(async (req, res, next) => {

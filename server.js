@@ -33,6 +33,7 @@ app.use('/file', require("./router/file.router"))
 app.use('/table', require('./router/table.router'))
 app.use('/paymentAndDeduct', require('./router/paymentAndDeduct.router'))
 app.use("/payment", require('./router/payment.router'))
+app.use("/deduct", require('./router/deduct.router'))
 
 app.use(errorHandler)
 
