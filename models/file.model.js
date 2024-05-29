@@ -37,7 +37,7 @@ const fileSchema = new mongoose.Schema({
         required : true,
         trim : true
     },
-    selectType : {
+    type : {
         type : String,
         required : true,
         trim : true
