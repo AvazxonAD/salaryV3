@@ -51,6 +51,10 @@ exports.workersOnLocation = asyncHandler(async (req, res, next) => {
     if(!location) {
         return next(new ErrorResponse("Joylashuv topilmadi", 404))
     }
+    if(req.query.type === "qolda"){
+        const workers = await File.find({ parentMaster: req.user.id, selectRegion: location.name }).sort({career : 1})
+        .select("selectLotin selectKril")    
+    }
     const workers = await File.find({ parentMaster: req.user.id, selectRegion: location.name }).sort({career : 1})
         .select("selectLotin selectKril selectPosition selectRank")
 
@@ -67,11 +71,11 @@ exports.workersOnLocation = asyncHandler(async (req, res, next) => {
  // create table 
  exports.createTable = asyncHandler(async (req, res, next) => {
     const location = await Location.findById(req.params.id)
-    const {tables} = req.body
+    const {tables, type} = req.body
     const date = req.query.date
     const result = []
 
-    if(!date || tables.length < 1){
+    if(!date || tables.length < 1 || !type){
         return next(new ErrorResponse("Sorovlar bosh qolishi mumkin emas", 403))
     }
     for(let table of tables){
@@ -81,6 +85,11 @@ exports.workersOnLocation = asyncHandler(async (req, res, next) => {
         const test  = await Table.findOne({parent : location._id, date : date, FIOlotin : table.FIOlotin, FIOkril : table.FIOkril, parentMaster : req.user.id})
         if(test){
             return next(new ErrorResponse(`Bu fuqaro oldin hisoblangan : ${table.FIOlotin}, ${table.FIOkril}`, 403))
+        }
+    }
+    if(type === "qolda"){
+        for(let table of tables){
+
         }
     }
     for(let table of tables){

@@ -133,7 +133,7 @@ exports.changeFileLocation = asyncHandler(async (req, res, next) => {
 // create info for page 
 exports.createInfo = asyncHandler(async (req, res, next) => {
     // lavozimlar royhatini olish 
-    const positions = await Position.find({parent : req.user.id}).sort({career : 1}).select("name percent -_id")
+    const positions = await Position.find({parent : req.user.id}).sort({career : 1}).select("name percent  salary -_id")
     // unvonlar royhatini olish 
     const ranks = await Rank.find({parent : req.user.id}).sort({name : 1}).select("-_id name summa")
     // ishchilar royhatini olib kelish 
