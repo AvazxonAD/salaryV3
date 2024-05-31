@@ -47,16 +47,13 @@ exports.getAllLocations = asyncHandler(async (req, res, next) => {
 
 // all workers on location
 exports.workersOnLocation = asyncHandler(async (req, res, next) => {
+    let workers = null
     const location = await Location.findById(req.params.id);
     if(!location) {
         return next(new ErrorResponse("Joylashuv topilmadi", 404))
     }
-    if(req.query.type === "qolda"){
-        const workers = await File.find({ parentMaster: req.user.id, selectRegion: location.name }).sort({career : 1})
-        .select("selectLotin selectKril")    
-    }
-    const workers = await File.find({ parentMaster: req.user.id, selectRegion: location.name }).sort({career : 1})
-        .select("selectLotin selectKril selectPosition selectRank")
+    workers = await File.find({ parentMaster: req.user.id, selectRegion: location.name }).sort({career : 1})
+        .select("selectLotin selectKril")
 
     const newWorkers = workers.map(worker => {
         return {
@@ -70,11 +67,13 @@ exports.workersOnLocation = asyncHandler(async (req, res, next) => {
 
  // create table 
  exports.createTable = asyncHandler(async (req, res, next) => {
+    // kerakli malumotlarni olib kelish va elon qilish  
+    let newTable = null
     const location = await Location.findById(req.params.id)
     const {tables, type} = req.body
     const date = req.query.date
     const result = []
-
+    // sorovlar bosh emasligini tekshirish
     if(!date || tables.length < 1 || !type){
         return next(new ErrorResponse("Sorovlar bosh qolishi mumkin emas", 403))
     }
@@ -82,21 +81,22 @@ exports.workersOnLocation = asyncHandler(async (req, res, next) => {
         if(!table.FIOlotin || !table.FIOkril || !table.workerDay || !table.currentDay || !table.position || !table.rank){
             return next(new ErrorResponse("Sorovlar bosh qolishi mumkin emas", 403))
         }
+        // fuqaro oldin jadvali hisoblanmaganini tekshirish 
         const test  = await Table.findOne({parent : location._id, date : date, FIOlotin : table.FIOlotin, FIOkril : table.FIOkril, parentMaster : req.user.id})
         if(test){
             return next(new ErrorResponse(`Bu fuqaro oldin hisoblangan : ${table.FIOlotin}, ${table.FIOkril}`, 403))
         }
     }
-    if(type === "qolda"){
-        for(let table of tables){
-
-        }
-    }
+    // kiritish va hisoblash 
     for(let table of tables){
+        // workerni olib kelish 
         const worker = await File.findOne({selectLotin : table.FIOlotin})
+        // bir kunlik ish haqqini hisoblash
         const oneDaySalary = worker.selectSalary / table.currentDay
+        // worker oylik maoshini hisoblash 
         const workerSalary = oneDaySalary * table.workerDay
-        const newTable = await Table.create({
+        // yangi table yaratish
+        newTable = await Table.create({
             date,
             FIOlotin : table.FIOlotin,
             FIOkril : table.FIOkril,
