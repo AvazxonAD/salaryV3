@@ -13,7 +13,7 @@ exports.createPosition = asyncHandler(async (req, res, next) => {
     const minimum = await Minimum.findOne()
     let result = []
     for(let position of positions){
-        if(!position.name || !position.percent, !position.career){
+        if(!position.name || !position.percent){
             return next(new ErrorResponse("Sorovlar bosh qolmasligi kerak", 403))
         }
         const test = await Position.findOne({name : position.name, parent : req.user.id})
