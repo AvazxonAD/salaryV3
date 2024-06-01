@@ -28,14 +28,16 @@ exports.createPosition = asyncHandler(async (req, res, next) => {
         const month = String(now.getMonth() + 1).padStart(2, '0'); // Oylarda 0 dan boshlanganligi uchun 1 qo'shamiz
         const day = String(now.getDate()).padStart(2, '0');
         const createDate = `${year}-${month}-${day}`;
-        
+        const positions = await Position.find({parent : req.user.id})
+        const length = positions.length
+
         const newPosition = await Position.create({
             name : position.name,
             percent : position.percent,
             salary : position.percent * minimum.summa,
             parent : req.user.id,
             date : createDate,
-            career : position.career
+            career : length + 1
         })
         await Master.findByIdAndUpdate(req.user.id, {$push : {positions : newPosition._id}}, {new : true})
         result.push(newPosition)
@@ -44,7 +46,7 @@ exports.createPosition = asyncHandler(async (req, res, next) => {
 })
 // get all position 
 exports.getAllPosition = asyncHandler(async (req, res, next) => {
-    const positions = await Position.find({parent : req.user.id})
+    const positions = await Position.find({parent : req.user.id}).sort({career : 1})
     return res.status(200).json({success : true, data : positions})
 })
 // delete position 
@@ -58,4 +60,16 @@ exports.deletePosition = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Server xatolik', 500))
     }
     return res.status(200).json({success : true, data : "Delete"})
+})
+// update position 
+exports.updatePosition = asyncHandler(async (req, res, next) => {
+    const minimum = await Minimum.findOne()
+    const position = Position.findById(req.params.id)
+    await Position.findByIdAndUpdate(req.params.id, {
+        name : req.body.name || position.name,
+        percent : req.body.percent || position.percent,
+        salary : req.body.percent * minimum.summa || position.percent * minimum.summa,
+        career : req.body.career || position.career
+    }, {new : true})
+    return res.status(200).json({success : true, data : "O'zgardi"})
 })

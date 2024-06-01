@@ -52,3 +52,12 @@ exports.deleteRank = asyncHandler(async (req, res, next) => {
 
     return res.status(200).json({success : true, data : "Delete"})
 })
+// update rank 
+exports.updateRank = asyncHandler(async (req, res, next) => {
+    const rank = Rank.findById(req.params.id)
+    await Rank.findByIdAndUpdate(req.params.id, {
+        name : req.body.name || rank.name,
+        summa : req.body.summa || rank.summa
+    }, {new : true})
+    return res.status(200).json({success : true, data : "O'zgardi"})
+})

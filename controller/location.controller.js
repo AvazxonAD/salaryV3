@@ -138,3 +138,11 @@ exports.changeLocations = asyncHandler ( async ( req, res, next ) => {
     // javob qaytarish
     return res.status(200).json({success : true, data : "Muvaffiqiyatli kochirildi"})
 })
+// update location 
+exports.updateLocation = asyncHandler(async (req, res, next) => {
+    const location = await Location.findById(req.params.id)
+    await Location.findByIdAndUpdate(req.params.id, {
+        name : req.body.name || location.name
+    }, {new : true})
+    return res.status(200).json({success : true, data : "Ozgardi"})
+})
