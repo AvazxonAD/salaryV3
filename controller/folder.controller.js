@@ -3,6 +3,8 @@ const ErrorResponse = require('../utils/errorResponse')
 const Folder = require('../models/folder.model')
 const Master = require('../models/master.model')
 const File = require('../models/file.model')
+const pathUrl = require("../utils/path")
+
 //create new folder 
 exports.createFolder = asyncHandler(async (req, res, next) => {
     parent = null
@@ -40,13 +42,18 @@ exports.getOpenFolder = asyncHandler(async (req, res, next) => {
         file = true
     }
     // javob qaytarish
-    return res.status(200).json({success : true, data : folders, file})
+    const path = await pathUrl(parent)
+    let resultPath = "/" + req.user.username + path 
+    return res.status(200).json({success : true, data : folders, file, path : resultPath})
 })
 // get open files
 exports.getOpenFolderForFile = asyncHandler(async (req, res, next) => {
+    let path = "/"
     const folder = await Folder.findById(req.params.id)
+    const url = await pathUrl(folder)
+    path = path + req.user.username + url
     const files = await File.find({_id : {$in : folder.files}}).sort({career : 1})
-    return res.status(200).json({success : true, data : files})
+    return res.status(200).json({success : true, data : files, path})
 })
 // delete folder 
 exports.deleteFolder = asyncHandler(async (req, res, next) => {

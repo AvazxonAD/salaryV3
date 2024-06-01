@@ -49,17 +49,18 @@ exports.login = asyncHandler(async (req, res, next) => {
 })
 // get user open 
 exports.userOpen = asyncHandler(async (req, res, next) => {
-    let userAdmin
+    let path = ""
     const user = await Master.findById(req.user.id).select("username passwordInfo adminStatus")
     const folders = await Folder.find({parent : user._id}).sort({name : 1})
+    path = path + "/" +  user.username
     if(user.adminStatus){
         const users = await Master.find({adminStatus : false}).select("username passwordInfo").sort({name : 1})
-        return res.status(200).json({success : true, admin : user, users, folders})
+        return res.status(200).json({success : true, admin : user, users, folders, path})
     }
     if(!user){
         return next(new ErrorResponse("Server xatolik", 403))
     }
-    return res.status(200).json({success : true, data : user, folders})
+    return res.status(200).json({success : true, data : user, folders, path : user.username})
 }) 
 // // update password 
 exports.updatePassword = asyncHandler(async (req, res, next) => {
