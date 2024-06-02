@@ -153,3 +153,21 @@ exports.changeFolderLocation = asyncHandler(async (req, res, next) => {
     folder.save()
     return res.status(200).json({success : true, data : "Ozgardi"})
 })
+// folder search 
+exports.searchFolder = asyncHandler(async (req, res, next) => {
+    const searchTerm = req.body.name;
+    const exactMatch = await Folder.findOne({ name: searchTerm, parentMaster: req.user.id });
+
+    if (exactMatch) {
+        return res.status(200).json({ success: true, data: [exactMatch] });
+    }
+
+    const regex = new RegExp(searchTerm, 'i'); // 'i' - case insensitive search
+    const folders = await Folder.find({ name: { $regex: regex }, parentMaster: req.user.id });
+
+    if (!folders.length) {
+        return next(new ErrorResponse("Bunday nomi bo'lgan bo'lim topilmadi", 403));
+    }
+
+    return res.status(200).json({ success: true, data: folders });
+});

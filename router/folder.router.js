@@ -9,7 +9,8 @@ const {
     deleteFolder,
     updateFolder, 
     getOpenFolderForFile,
-    changeFolderLocation
+    changeFolderLocation,
+    searchFolder
 } = require('../controller/folder.controller')
 
 router.get('/open/:id', protect, getOpenFolder)
@@ -18,6 +19,7 @@ router.post("/create/:id", protect, createFolder)
 router.delete("/delete/:id", protect, deleteFolder)
 router.put("/update/:id", protect, updateFolder)
 router.put("/change/:id", protect, changeFolderLocation)
+router.post("/search", protect, searchFolder)
 
 module.exports = router
 
