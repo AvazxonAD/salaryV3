@@ -7,6 +7,7 @@ const Position = require('../models/position.model')
 const Rank = require('../models/rank.model')
 const Worker = require('../models/worker.model')
 const Location = require('../models/location.model')
+const pathUrl = require('../utils/path')
 
 // create new file
 exports.createFile = asyncHandler(async (req, res, next) => {
@@ -132,6 +133,8 @@ exports.changeFileLocation = asyncHandler(async (req, res, next) => {
 })
 // create info for page 
 exports.createInfo = asyncHandler(async (req, res, next) => {
+    const folder = await Folder.findById(req.params.id)
+    const path = "/" + req.user.username + await pathUrl(folder)
     // lavozimlar royhatini olish 
     const positions = await Position.find({parent : req.user.id}).sort({career : 1}).select("name percent  salary -_id")
     // unvonlar royhatini olish 
@@ -141,5 +144,5 @@ exports.createInfo = asyncHandler(async (req, res, next) => {
     // joylashuvlarni olib kelish 
     const locations = await Location.find({parent : req.user.id}).sort({name : 1}).select("-_id name")
     // jabob qaytarish
-    return res.status(200).json({success : true, positions, ranks, workers, locations})
+    return res.status(200).json({success : true, positions, ranks, workers, locations, path})
 }) 

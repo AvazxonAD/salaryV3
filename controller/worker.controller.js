@@ -24,17 +24,47 @@ exports.createWorker = asyncHandler(async (req, res, next) => {
         }
         const testInn = await Worker.findOne({inn : worker.inn, parent : req.user.id})
         if(testInn){
-            return next(new ErrorResponse(`Bu fuqaro oldin kiritilgan : ${worker.inn}`, 403))
+            return next(new ErrorResponse(`Bu fuqaro innsi  oldin kiritilgan : ${worker.inn}`, 403))
         }
     }
+    
+    const now = new Date();
+    
+    // Hozirgi yil, oy va kunni olish
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Oylarda 0 dan boshlanganligi uchun 1 qo'shamiz
+    const day = String(now.getDate()).padStart(2, '0');
+    const createDate = `${year}-${month}-${day}`;
+    //hozirgi yilni birinchi  yanvari
+    let currentYear = new Date().getFullYear();
+    const currentDate = new Date(currentYear + "-01-01T00:00:00.000Z");
+    
     for(let worker of workers){
-        const now = new Date();
-        // Hozirgi yil, oy va kunni olish
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0'); // Oylarda 0 dan boshlanganligi uchun 1 qo'shamiz
-        const day = String(now.getDate()).padStart(2, '0');
-        const createDate = `${year}-${month}-${day}`;
+        let seniority = null
+        // worker date tog'irlash 
+        let workerDate = new Date(worker.dateOfEmployment.split("T")[0])
 
+        if(currentDate >  workerDate){
+            // Sana farqini hisoblash
+            const farqInMillis = currentDate.getTime() - workerDate.getTime();
+
+            // Millisekundlarni yilga, oyga va kunga bo'lib bo'lmagan qismlarga ajratish
+            const millisecondsInDay = 1000 * 60 * 60 * 24;
+            const millisecondsInMonth = millisecondsInDay * 30; // O'rta oy
+            const millisecondsInYear = millisecondsInDay * 365; // O'rta yil
+
+            // Yillarni hisoblash
+            const yillar = Math.floor(farqInMillis / millisecondsInYear);
+            const qolganMillis = farqInMillis % millisecondsInYear;
+
+            // Oylarni hisoblash
+            const oylar = Math.floor(qolganMillis / millisecondsInMonth);
+            const qolganMillis2 = qolganMillis % millisecondsInMonth;
+
+            // Kunlarni hisoblash
+            const kunlar = Math.floor(qolganMillis2 / millisecondsInDay);
+            seniority = `${yillar}-${oylar}-${kunlar}`
+        }
         const newWorker = await Worker.create({
             FIOlotin : worker.FIOlotin,
             FIOkril : worker.FIOkril,
@@ -44,7 +74,8 @@ exports.createWorker = asyncHandler(async (req, res, next) => {
             dateOfEmployment : worker.dateOfEmployment,
             budget : worker.budget,
             parent : req.user.id,
-            date : createDate
+            date : createDate,
+            seniority : seniority || "ish tajribasi yoq"
         })
         result.push(newWorker)
         await Master.findByIdAndUpdate(req.user.id, {$push : {workers : newWorker._id}}, {new : true})

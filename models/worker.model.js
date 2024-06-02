@@ -38,6 +38,10 @@ const workerSchema = new mongoose.Schema({
     date : {
         type : String,
         required : true
+    },
+    seniority : {
+        type : String,
+        trim : true
     }
 }, {timestamps : true})
 
