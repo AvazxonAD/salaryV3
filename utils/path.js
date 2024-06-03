@@ -1,24 +1,20 @@
-const Folder = require('../models/folder.model');
-const Master = require('../models/master.model');
+const Folder = require("../models/folder.model");
 
 async function pathUrl(folder) {
-    let pathSegments = [];
-
-    // Rekursiv yordamchi funksiya yaratamiz
-    async function buildPath(folder) {
-        if (!folder) return;
-
-        if (folder.parent) {
-            const parentFolder = await Folder.findById(folder.parent);
-            await buildPath(parentFolder);
-        }
-        pathSegments.push(folder.name); // Folder name-ni oxiriga qo'shamiz
+    if (!folder) {
+        throw new Error("Folder topilmadi", 403);
     }
 
-    await buildPath(folder);
+    let pathArray = [folder.name];
+    
+    const parent = await Folder.findById(folder.parent);
 
-    // Natijani to'g'ri formatda qaytaramiz
-    return '/' + pathSegments.join('/');
+    if (!parent) {
+        return '/' + pathArray.reverse().join('/');
+    }
+
+    const parentPath = await pathUrl(parent);
+    return parentPath + '/' + folder.name;
 }
 
 module.exports = pathUrl;

@@ -5,6 +5,12 @@ const Master = require('../models/master.model')
 const File = require('../models/file.model')
 const pathUrl = require("../utils/path")
 
+// get open user 
+exports.getOpenUser = asyncHandler(async (req, res, next) => {
+    const folders = await Folder.find({parent : req.user.id, parentMaster : req.user.id})
+    return res.status(200).json({success : true, data : folders, path : "/" + req.user.username})
+})
+
 //create new folder 
 exports.createFolder = asyncHandler(async (req, res, next) => {
     parent = null

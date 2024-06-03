@@ -18,6 +18,7 @@ app.use(cors())
 const PORT = process.env.PORT || 3000
 
 connectDB()
+
 createAdmin()
 minimum()
 

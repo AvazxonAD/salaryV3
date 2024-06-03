@@ -7,7 +7,7 @@ const {createWorker, login, userOpen, updatePassword} = require('../controller/a
 
 router.post('/create', protect, createWorker)
 router.post('/login', login)
-router.get('/open',protect, userOpen)
+router.get('/get',protect, userOpen)
 router.put('/update',protect, updatePassword)
 
 

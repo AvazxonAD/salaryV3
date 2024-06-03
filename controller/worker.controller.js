@@ -63,7 +63,15 @@ exports.createWorker = asyncHandler(async (req, res, next) => {
 
             // Kunlarni hisoblash
             const kunlar = Math.floor(qolganMillis2 / millisecondsInDay);
-            seniority = `${yillar}-${oylar}-${kunlar}`
+            if(oylar < 10){
+                seniority = `${yillar}-0${oylar}-${kunlar}`
+            }
+            if(kunlar < 10){
+                seniority = `${yillar}-${oylar}-0${kunlar}`
+            }
+            if(oylar < 10 && kunlar < 10){
+                seniority = `${yillar}-0${oylar}-0${kunlar}`
+            }
         }
         const newWorker = await Worker.create({
             FIOlotin : worker.FIOlotin,

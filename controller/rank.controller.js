@@ -9,7 +9,6 @@ exports.createRank = asyncHandler(async (req, res, next) => {
     if(!ranks || ranks.length === 0){
         return next(new ErrorResponse("Sorovlar bosh qolmasligi kerak", 403))
     }
-    let result = []
     let date
     for(let rank of ranks){
         if(!rank.name || rank.summa == null){
@@ -30,9 +29,8 @@ exports.createRank = asyncHandler(async (req, res, next) => {
 
         const newRank = await Rank.create({name : rank.name, summa : rank.summa, parent : req.user.id, date : createDate})
         await Master.findByIdAndUpdate(req.user.id, {$push : {ranks : newRank._id}})
-        result.push(newRank)
     }
-    return res.status(200).json({success : true, data : result})
+    return res.status(200).json({success : true, data : "Kiritildi"})
 })
 // get all rank 
 exports.getAllRank =asyncHandler(async (req, res, next) => {

@@ -10,9 +10,11 @@ const {
     updateFolder, 
     getOpenFolderForFile,
     changeFolderLocation,
-    searchFolder
+    searchFolder,
+    getOpenUser
 } = require('../controller/folder.controller')
 
+router.get("/open/user", protect, getOpenUser)
 router.get('/open/:id', protect, getOpenFolder)
 router.get('/open/file/:id', protect, getOpenFolderForFile)
 router.post("/create/:id", protect, createFolder)
