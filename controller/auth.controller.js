@@ -3,6 +3,12 @@ const ErrorResponse = require('../utils/errorResponse.js')
 const Master = require('../models/master.model.js')
 const Folder = require('../models/folder.model.js')
 
+
+// for login page 
+exports.getLogin = asyncHandler(async (req, res, next) => {
+    const usernames = await Master.find().select("username -_id").sort({createdAt : 1})
+    return res.status(200).json({success : true, data : usernames})
+})
 //create worker  
 exports.createWorker = asyncHandler(async (req, res, next) => {
     if(!req.user.admin){
