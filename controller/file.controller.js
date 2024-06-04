@@ -29,6 +29,14 @@ exports.createFile = asyncHandler(async (req, res, next) => {
             return next(new ErrorResponse(`Bu malumotdan oldin foydalanilgan : ${testKril.selectKril}`))
         }
     }
+    const now = new Date();
+    
+    // Hozirgi yil, oy va kunni olish
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Oylarda 0 dan boshlanganligi uchun 1 qo'shamiz
+    const day = String(now.getDate()).padStart(2, '0');
+    const createDate = `${year}-yil/${month}-oy/${day}-kun`;
+
     for(let file of files){
         const career = await Position.findOne({name : file.selectPosition})
         const newFile = await File.create({
@@ -44,7 +52,8 @@ exports.createFile = asyncHandler(async (req, res, next) => {
             selectBudget : file.selectBudget,
             parentMaster : req.user.id,
             parent : folder._id,
-            career : career.career
+            career : career.career,
+            date : createDate
         })
         folder.files.push(newFile._id)
         await folder.save()

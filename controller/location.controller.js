@@ -27,7 +27,7 @@ exports.createLocation = asyncHandler(async (req, res, next) => {
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0'); // Oylarda 0 dan boshlanganligi uchun 1 qo'shamiz
         const day = String(now.getDate()).padStart(2, '0');
-        const createDate = `${year}-${month}-${day}`;
+        const createDate = `${year}-yil/${month}-oy/${day}-kun`;
 
         const newLocation = await Location.create({
             name : location.name,

@@ -58,6 +58,10 @@ const fileSchema = new mongoose.Schema({
     parentMaster : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "Master"
+    },
+    date : {
+        type : String,
+        required : true
     }
 }, {timestamps : true})
 
