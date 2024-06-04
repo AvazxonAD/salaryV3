@@ -29,8 +29,17 @@ exports.createFolder = asyncHandler(async (req, res, next) => {
     if(test){
         return next(new ErrorResponse(`Bu bolimdan bunday nomli bolim mavjud : ${test.name}`))
     }
-
-    const newFolder = await Folder.create({name, parent : parent._id, parentMaster : req.user.id})
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Oylarda 0 dan boshlanganligi uchun 1 qo'shamiz
+    const day = String(now.getDate()).padStart(2, '0');
+    const createDate = `${year}-yil/${month}-oy/${day}-kun`;
+    const newFolder = await Folder.create({
+        name,
+        parent : parent._id,
+        parentMaster : req.user.id, 
+        type : "Folder",
+        date : createDate
+    })
     parent.folders.push(newFolder._id)
     await parent.save()
     return res.status(200).json({ success : true, data : newFolder})

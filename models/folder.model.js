@@ -21,6 +21,14 @@ const FolderSchema = new Schema({
     parentMaster : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "Master"
+    },
+    type : {
+        type : String,
+        required : true
+    },
+    date : {
+        type : String,
+        required : true
     }
 });
 
