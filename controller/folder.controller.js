@@ -192,3 +192,38 @@ exports.changeFolderLocation = asyncHandler(async (req, res, next) => {
         folder.save()
         return res.status(200).json({success : true, data : "Ozgardi"})
 })
+// orqaga 
+exports.getBack = asyncHandler(async (req, res, next) => {
+    let parentFolder = null
+    let path = null
+    let files = false
+    // folderni topish 
+    const folder = await Folder.findById(req.params.id)
+    if(!Folder){
+        return next(new ErrorResponse("Folder id notogri kiritldi yoki server ishlamayapti", 500))
+    }
+    // ega folder yoki userni topish 
+    parentFolder = await Folder.findById(folder.parent)
+    if(!parentFolder){
+        parentFolder = await Master.findById(folder.parent)
+        if(!parentFolder){
+            return next(new ErrorResponse("ega folder id notogri kiritldi yoki server ishlamayapti", 500))
+        }
+    }
+    //ega folder yolini aniqlash 
+    if ( parentFolder.name !== undefined ) {
+        path = '/' + req.user.username + await pathUrl(parentFolder)
+        // ega folder file bor yoqligini aniqlash 
+        if ( parentFolder.files.length >= 1 ) {
+            files = true
+        }
+    } else if ( parentFolder.username !== undefined ) {
+        path = "/" + req.user.username
+    }
+    // folderlarni topish 
+    const folders = await Folder.find({_id : {$in : parentFolder.folders}})
+
+    // javob qaytarish
+    return res.status(200).json({success : true, data : folders, files, path})
+
+})
