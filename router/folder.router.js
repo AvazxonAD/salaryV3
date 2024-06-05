@@ -24,7 +24,6 @@ router.put("/update/:id", protect, updateFolder)
 router.put("/change/:id", protect, changeFolderLocation)
 router.post("/search", protect, searchFolder)
 router.get("/back/:id", protect, getBack)
-console.log("ozgardi")
 module.exports = router
 
 
