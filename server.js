@@ -41,3 +41,4 @@ app.use(errorHandler)
 app.listen(PORT, () => {
     console.log(`Server run on port : ${PORT}`.blue)
 })
+console.log("ozgardi")
