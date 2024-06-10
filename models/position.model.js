@@ -6,7 +6,7 @@ const positionSchema = new mongoose.Schema({
         required : true,
         trim : true
     },
-    percent : {
+    coefficient : {
         type : Number,
         required : true
     },

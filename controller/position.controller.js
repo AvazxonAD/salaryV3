@@ -13,7 +13,7 @@ exports.createPosition = asyncHandler(async (req, res, next) => {
     const minimum = await Minimum.findOne()
     let result = []
     for(let position of positions){
-        if(!position.name || !position.percent){
+        if(!position.name || !position.coefficient){
             return next(new ErrorResponse("Sorovlar bosh qolmasligi kerak", 403))
         }
         const test = await Position.findOne({name : position.name, parent : req.user.id})
@@ -33,8 +33,8 @@ exports.createPosition = asyncHandler(async (req, res, next) => {
 
         const newPosition = await Position.create({
             name : position.name,
-            percent : position.percent,
-            salary : position.percent * minimum.summa,
+            coefficient : position.coefficient,
+            salary : position.coefficient * minimum.summa,
             parent : req.user.id,
             date : createDate,
             career : length + 1
@@ -67,8 +67,8 @@ exports.updatePosition = asyncHandler(async (req, res, next) => {
     const position = Position.findById(req.params.id)
     await Position.findByIdAndUpdate(req.params.id, {
         name : req.body.name || position.name,
-        percent : req.body.percent || position.percent,
-        salary : req.body.percent * minimum.summa || position.percent * minimum.summa,
+        coefficient : req.body.coefficient || position.coefficient,
+        salary : req.body.coefficient * minimum.summa || position.coefficient * minimum.summa,
         career : req.body.career || position.career
     }, {new : true})
     return res.status(200).json({success : true, data : "O'zgardi"})
