@@ -227,3 +227,16 @@ exports.getBack = asyncHandler(async (req, res, next) => {
     return res.status(200).json({success : true, data : folders, files, path})
 
 })
+// for folder path 
+exports.forPath = asyncHandler(async (req, res, next) => {
+    let parent = null 
+    parent = await Master.findById(req.params.id)
+    if(!parent){
+        parent = await Folder.findById(req.params.id)
+        if(!parent){
+            return next(new ErrorResponse('server xatolik ega topilmadi', 403))
+        }
+    }
+    const folders = await Folder.find({parent: parent.id}).select("name _id")
+    return res.status(200).json({success: true, data: folders})
+})

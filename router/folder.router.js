@@ -12,7 +12,8 @@ const {
     changeFolderLocation,
     searchFolder,
     getOpenUser,
-    getBack
+    getBack,
+    forPath
 } = require('../controller/folder.controller')
 
 router.get("/open/user", protect, getOpenUser)
@@ -24,6 +25,8 @@ router.put("/update/:id", protect, updateFolder)
 router.put("/change/:id", protect, changeFolderLocation)
 router.post("/search", protect, searchFolder)
 router.get("/back/:id", protect, getBack)
+router.get('/path/:id', protect, forPath)
+
 module.exports = router
 
 
