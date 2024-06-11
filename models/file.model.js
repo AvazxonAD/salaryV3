@@ -13,23 +13,13 @@ const fileSchema = new mongoose.Schema({
         type : Number,
         required : true
     },
-    selectLotin : {
-        type : String,
-        required : true,
-        trim : true
-    },
-    selectKril : {
+    selectCoctav : {
         type : String,
         required : true, 
         trim : true
     },
-    selectRank : {
+    selectTip : {
         type : String,
-        required : true, 
-        trim : true
-    },
-    selectSumma : {
-        type : Number,
         required : true
     },
     selectRegion : {
@@ -37,19 +27,9 @@ const fileSchema = new mongoose.Schema({
         required : true,
         trim : true
     },
-    type : {
-        type : String,
-        required : true,
-        trim : true
-    },
-    selectBudget : {
-        type : String,
-        required : true,
-        trim : true
-    },
-    career : {
-        type : Number,
-        required : true
+    selectStavka: {
+        type: String,
+        required: true
     },
     parent : {
         type : mongoose.Schema.Types.ObjectId,
