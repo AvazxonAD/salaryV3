@@ -7,6 +7,9 @@ const Position = require('../models/position.model')
 const Rank = require('../models/rank.model')
 const Worker = require('../models/worker.model')
 const Location = require('../models/location.model')
+const Tip = require('../models/tip.model')
+const Coctav = require('../models/coctav.model')
+
 const pathUrl = require('../utils/path')
 
 // create new file
@@ -151,11 +154,11 @@ exports.createInfo = asyncHandler(async (req, res, next) => {
     // lavozimlar royhatini olish 
     const positions = await Position.find({parent : req.user.id}).sort({career : 1}).select("name percent  salary -_id")
     // unvonlar royhatini olish 
-    const tips = await Tip.find({parent : req.user.id}).sort({name : 1}).select("-_id name summa")
+    const tips = await Tip.find({parent : req.user.id}).sort({name : 1}).select("-_id name")
     // ishchilar royhatini olib kelish 
-    const workers = await Worker.find({parent : req.user.id}).sort({FIOlotin : 1}).select("-_id FIOlotin FIOkril budget")
+    const coctavs = await Coctav.find({parent : req.user.id}).sort({name : 1}).select("name -_id")
     // joylashuvlarni olib kelish 
     const locations = await Location.find({parent : req.user.id}).sort({name : 1}).select("-_id name")
     // jabob qaytarish
-    return res.status(200).json({success : true, positions, ranks, workers, locations, path})
+    return res.status(200).json({success : true, positions, tips, coctavs, locations, path})
 }) 

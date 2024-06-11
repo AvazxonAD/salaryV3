@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+
 const fileSchema = new mongoose.Schema({
     selectPosition : {
         type : String,
@@ -43,8 +44,8 @@ const fileSchema = new mongoose.Schema({
         type : String,
         required : true
     }
-}, {timestamps : true})
+},
+ {timestamps : true}
+)
 
-module.exports = mongoose.model("File", fileSchema)
-
-
+module.exports = mongoose.model("File", fileSchema )

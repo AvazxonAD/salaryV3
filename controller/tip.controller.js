@@ -26,7 +26,7 @@ exports.createTip = asyncHandler(async (req, res, next) => {
         const day = String(now.getDate()).padStart(2, '0');
         const createDate = `${year}-${month}-${day}`;
 
-        const newTip = await tip.create({
+        const newTip = await Tip.create({
             name : tip.name,
             parent : req.user.id,
             date : createDate
@@ -62,9 +62,9 @@ exports.updateTip = asyncHandler(async (req, res, next) => {
             return next(new ErrorResponse(`bunday nomli tip turi kiritilgan: ${test.name}`, 403))
         }
     }
-    await Tip.findByIdAndUpdate(req.params.id, {
+    const updateTip = await Tip.findByIdAndUpdate(req.params.id, {
         name : req.body.name
     }, {new : true})
     
-    return res.status(200).json({success : true, data: tip})
+    return res.status(200).json({success : true, data: updateTip})
 })

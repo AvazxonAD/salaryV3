@@ -62,9 +62,9 @@ exports.updateCoctav = asyncHandler(async (req, res, next) => {
             return next(new ErrorResponse(`bunday nomli coctav turi kiritilgan: ${test.name}`, 403))
         }
     }
-    await Coctav.findByIdAndUpdate(req.params.id, {
+    const updateCoctav = await Coctav.findByIdAndUpdate(req.params.id, {
         name : req.body.name
     }, {new : true})
     
-    return res.status(200).json({success : true, data: coctav})
+    return res.status(200).json({success : true, data: updateCoctav})
 })
