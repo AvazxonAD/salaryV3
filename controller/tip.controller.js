@@ -26,7 +26,7 @@ exports.createTip = asyncHandler(async (req, res, next) => {
         const day = String(now.getDate()).padStart(2, '0');
         const createDate = `${year}-${month}-${day}`;
 
-        const newTip = await Tip.create({
+        await Tip.create({
             name : tip.name,
             parent : req.user.id,
             date : createDate

@@ -8,6 +8,10 @@ const coctavSchema = new mongoose.Schema({
     parent: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Master"
+    },
+    date:{
+        type: String,
+        required: true
     }
 }, 
 {timestamps: true}

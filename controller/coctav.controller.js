@@ -26,7 +26,7 @@ exports.createCoctav = asyncHandler(async (req, res, next) => {
         const day = String(now.getDate()).padStart(2, '0');
         const createDate = `${year}-${month}-${day}`;
 
-        const newCoctav = await Coctav.create({
+        await Coctav.create({
             name : coctav.name,
             parent : req.user.id,
             date : createDate
