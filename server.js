@@ -35,6 +35,9 @@ app.use('/table', require('./router/table.router'))
 app.use('/paymentAndDeduct', require('./router/paymentAndDeduct.router'))
 app.use("/payment", require('./router/payment.router'))
 app.use("/deduct", require('./router/deduct.router'))
+app.use('/coctav', require('./router/coctav.router'))
+app.use('/tip', require('./router/tip.router'))
+
 
 app.use(errorHandler)
 

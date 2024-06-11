@@ -66,5 +66,5 @@ exports.updateCoctav = asyncHandler(async (req, res, next) => {
         name : req.body.name
     }, {new : true})
     
-    return res.status(200).json({success : true, data : "Ozgardi"})
+    return res.status(200).json({success : true, data: coctav})
 })
