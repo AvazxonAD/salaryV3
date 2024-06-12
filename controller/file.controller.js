@@ -72,7 +72,7 @@ exports.updateFile = asyncHandler(async (req, res, next) => {
     file.selectCoctav = req.body.selectCoctav
     file.selectTip = req.body.selectTip
     file.selectPosition = req.body.selectPosition
-    file.selectPercent = req.body.selectPercent
+    file.selectCoefficient = req.body.selectoCefficient
     file.selectSalary = req.body.selectPercent * minimum.summa
     file.selectRegion = req.body.selectRegion
     file.selectStavka = req.body.selectStavka
@@ -149,7 +149,7 @@ exports.createInfo = asyncHandler(async (req, res, next) => {
     const folder = await Folder.findById(req.params.id)
     const path = "/" + req.user.username + await pathUrl(folder)
 
-    const positions = await Position.find({parent : req.user.id}).sort({career : 1}).select("name percent  salary -_id")
+    const positions = await Position.find({parent : req.user.id}).sort({career : 1}).select("name coefficient salary -_id")
 
     const tips = await Tip.find({parent : req.user.id}).sort({name : 1}).select("-_id name")
 
