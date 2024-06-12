@@ -4,8 +4,6 @@ const Folder = require('../models/folder.model')
 const File = require('../models/file.model')
 const Minimum = require('../models/minimum')
 const Position = require('../models/position.model')
-const Rank = require('../models/rank.model')
-const Worker = require('../models/worker.model')
 const Location = require('../models/location.model')
 const Tip = require('../models/tip.model')
 const Coctav = require('../models/coctav.model')
@@ -14,7 +12,6 @@ const pathUrl = require('../utils/path')
 
 // create new file
 exports.createFile = asyncHandler(async (req, res, next) => {
-    const minimum = await Minimum.findOne()
     const folder = await Folder.findById(req.params.id)
     let result = []
     const {files} = req.body
@@ -23,9 +20,9 @@ exports.createFile = asyncHandler(async (req, res, next) => {
         if(!file.selectPosition  || !file.selectPercent || !file.selectSalary ||  !file.selectCoctav || !file.selectTip   || !file.selectRegion  || !file.selectStavka ){
             return next(new ErrorResponse("Sorovlar bosh qolmasligi kerak", 402))
         }
-        const test = await File.findOne({selectPosition : file.Position, parent : folder._id})
+        const test = await File.findOne({selectPosition : file.selectPosition.trim(), parent : folder._id, selectRegion: file.selectRegion.trim() })
         if(test){
-            return next(new ErrorResponse(`Bu malumotdan oldin foydalanilgan : ${test.selectPosition}`))
+            return next(new ErrorResponse(`Bu malumotdan oldin foydalanilgan : ${test.selectPosition}  ${test.selectRegion}`))
         }
     }
     const now = new Date();
@@ -41,7 +38,7 @@ exports.createFile = asyncHandler(async (req, res, next) => {
             selectPosition : file.selectPosition,
             selectSalary : file.selectSalary, 
             selectPercent : file.selectPercent, 
-            selectTip : file.selecTip, 
+            selectTip : file.selectTip, 
             selectCoctav : file.selectCoctav, 
             selectRegion : file.selectRegion,
             selectStavka: file.selectStavka,
@@ -60,15 +57,15 @@ exports.createFile = asyncHandler(async (req, res, next) => {
 exports.updateFile = asyncHandler(async (req, res, next) => {
     const minimum = await Minimum.findOne()
     const file = await File.findById(req.params.id)
-    
-    if(!file.selectPosition  || !file.selectPercent || !file.selectSalary ||  !file.selectCoctav || !file.selectTip   || !file.selectRegion  || !file.selectStavka ){
+    console.log(req.body)
+    if(!req.body.selectPosition  || !req.body.selectPercent || !req.body.selectSalary ||  !req.body.selectCoctav || !req.body.selectTip   || !req.body.selectRegion  || !req.body.selectStavka ){
         return next(new ErrorResponse("Sorovlar bosh qolmasligi kerak", 402))
     }
 
     if(file.selectPosition !== req.body.selectPosition){
-       const test = await  File.findOne({parent : file.parent, selectPosition : req.body.selectPosition })
+       const test = await  File.findOne({parent : file.parent, selectPosition : req.body.selectPosition, selectRegion: req.body.selectRegion })
        if(test){
-        return next(new ErrorResponse(`Ushbu malumotdan foydalanilgan : ${test.selectPosition} `))
+        return next(new ErrorResponse(`Ushbu malumotdan foydalanilgan : ${test.selectPosition} ${test.selectRegion}`))
        } 
     }
     
@@ -151,14 +148,14 @@ exports.changeFileLocation = asyncHandler(async (req, res, next) => {
 exports.createInfo = asyncHandler(async (req, res, next) => {
     const folder = await Folder.findById(req.params.id)
     const path = "/" + req.user.username + await pathUrl(folder)
-    // lavozimlar royhatini olish 
+
     const positions = await Position.find({parent : req.user.id}).sort({career : 1}).select("name percent  salary -_id")
-    // unvonlar royhatini olish 
+
     const tips = await Tip.find({parent : req.user.id}).sort({name : 1}).select("-_id name")
-    // ishchilar royhatini olib kelish 
+
     const coctavs = await Coctav.find({parent : req.user.id}).sort({name : 1}).select("name -_id")
-    // joylashuvlarni olib kelish 
+
     const locations = await Location.find({parent : req.user.id}).sort({name : 1}).select("-_id name")
-    // jabob qaytarish
+
     return res.status(200).json({success : true, positions, tips, coctavs, locations, path})
 }) 
